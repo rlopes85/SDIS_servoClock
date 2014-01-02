@@ -6,11 +6,26 @@ package Master;
 import java.io.*;
 import java.net.*;
 
+/**
+ * Implementação do Master Clock(relógio de referência).
+ * Utilizando sockets TCP. O MC usa o System nanotime da JVM para
+ * gerar relogio de referencia.
+ * @
+ */
 public class TCPServer {
+    /**
+     *  Função para obter o tempo de referencia gerado pela JVM
+     * @return  nanoTime, tempo de referência com precisão de nano segundos.
+     */
+    public static long MasterTime(){
+
+        return System.nanoTime();
+    }
     public static void main(String argv[]) throws Exception {
         String fromclient;
         String toclient;
 
+        long tempo_master;
         ServerSocket Server = new ServerSocket (5000);
 
         System.out.println ("TCPServer Waiting for client on port 5000");
@@ -31,8 +46,10 @@ public class TCPServer {
                             connected.getOutputStream(),true);
 
             while ( true ) {
-
+                tempo_master = MasterTime();
                 System.out.println("SEND(Type Q or q to Quit):");
+                System.out.println("System nanoTime" + tempo_master);
+
                 toclient = inFromUser.readLine();
 
                 if ( toclient.equals ("q") || toclient.equals("Q") ) {
