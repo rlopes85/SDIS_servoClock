@@ -6,7 +6,15 @@ package Servo;
 import java.io.*;
 import java.net.*;
 
+/**
+ *
+ */
 public class TCPClient {
+    /**
+     *
+     * @param argv
+     * @throws Exception
+     */
     public static void main(String argv[]) throws Exception {
         String FromServer;
         String ToServer;
