@@ -21,14 +21,21 @@ public class TCPServer {
 
         return System.nanoTime();
     }
+
+    /**
+     *
+     * @param argv, Numero do porto do socket do servidor.
+     * @throws Exception
+     */
     public static void main(String argv[]) throws Exception {
         String fromclient;
         String toclient;
+        int Port_Number = Integer.valueOf(argv[0]);
 
         long tempo_master;
-        ServerSocket Server = new ServerSocket (5000);
+        ServerSocket Server = new ServerSocket (Port_Number);
 
-        System.out.println ("TCPServer Waiting for client on port 5000");
+        System.out.println ("TCPServer Waiting for client on port " + Port_Number);
 
         while(true) {
             Socket connected = Server.accept();

@@ -11,7 +11,11 @@ public class TCPClient {
         String FromServer;
         String ToServer;
 
-        Socket clientSocket = new Socket("localhost", 5000);
+
+        InetAddress ip_server = InetAddress.getByName(argv[0]);
+        int Port_Number = Integer.valueOf(argv[1]);
+
+        Socket clientSocket = new Socket(ip_server, Port_Number);
 
         BufferedReader inFromUser =
                 new BufferedReader(new InputStreamReader(System.in));
