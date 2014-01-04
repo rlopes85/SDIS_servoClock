@@ -7,19 +7,23 @@ import java.io.*;
 import java.net.*;
 
 /**
- *
+ * TODO implementar PI para modelo de relógio do slave
+ * Implementação do slave do servo clock.
  */
 public class TCPClient {
     /**
      *
-     * @param argv
+     * @param argv, Recebe como parametros o ip do servidor e o porto na forma ip porto
+     *              ex. 192.168.1.34 5000
      * @throws Exception
      */
     public static void main(String argv[]) throws Exception {
         String FromServer;
         String ToServer;
 
-
+         /*
+         fixme rever estrotura dos parametros, passar para aforma mais convencional ip:porto
+          */
         InetAddress ip_server = InetAddress.getByName(argv[0]);
         int Port_Number = Integer.valueOf(argv[1]);
 
@@ -36,29 +40,19 @@ public class TCPClient {
 
         while (true) {
 
-            FromServer = inFromServer.readLine();
+            //FromServer = inFromServer.readLine();
 
-            if ( FromServer.equals("q") || FromServer.equals("Q")) {
-                clientSocket.close();
-                break;
-            }
 
-            else {
-                System.out.println("RECIEVED:" + FromServer);
-                System.out.println("SEND(Type Q or q to Quit):");
+                //System.out.println("SEND(Type Q or q to Quit):");
 
                 ToServer = inFromUser.readLine();
-
-                if (ToServer.equals("Q") || ToServer.equals("q")) {
-                    outToServer.println (ToServer) ;
-                    clientSocket.close();
-                    break;
-                }
-
-                else {
+            System.out.println(ToServer);
+                if (ToServer.equals("TIME")){
+                    //System.out.println(ToServer);
                     outToServer.println(ToServer);
                 }
-            }
+            FromServer = inFromServer.readLine();
+            System.out.println("RECIEVED:" + FromServer);
         }
     }
 }

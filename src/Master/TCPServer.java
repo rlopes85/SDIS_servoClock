@@ -23,7 +23,7 @@ public class TCPServer {
     }
 
     /**
-     *
+     *  TODO rever formato das mensagens
      * @param argv, Numero do porto do socket do servidor.
      * @throws Exception
      */
@@ -42,9 +42,6 @@ public class TCPServer {
             System.out.println( " THE CLIENT"+" "+
                     connected.getInetAddress() +":"+connected.getPort()+" IS CONNECTED ");
 
-            BufferedReader inFromUser =
-                    new BufferedReader(new InputStreamReader(System.in));
-
             BufferedReader inFromClient =
                     new BufferedReader(new InputStreamReader (connected.getInputStream()));
 
@@ -52,33 +49,16 @@ public class TCPServer {
                     new PrintWriter(
                             connected.getOutputStream(),true);
 
-            while ( true ) {
-                tempo_master = MasterTime();
-                System.out.println("SEND(Type Q or q to Quit):");
-                System.out.println("System nanoTime" + tempo_master);
+            while ( true ) {     //fixme melhorar resposta aos pedidos do slave
 
-                toclient = inFromUser.readLine();
-
-                if ( toclient.equals ("q") || toclient.equals("Q") ) {
-                    outToClient.println(toclient);
-                    connected.close();
-                    break;
-                }
-                else {
-                    outToClient.println(toclient);
-                }
 
                 fromclient = inFromClient.readLine();
 
-                if ( fromclient.equals("q") || fromclient.equals("Q") ) {
-                    connected.close();
-                    break;
+                if (fromclient.compareTo("TIME") == 0){
+                    toclient = String.valueOf(MasterTime());
+                    outToClient.println(toclient);
+                    System.out.println("SEND: " + toclient);
                 }
-
-                else {
-                    System.out.println( "RECIEVED:" + fromclient );
-                }
-
             }
 
         }
