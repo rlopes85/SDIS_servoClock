@@ -1,14 +1,12 @@
 package Servo;
 
-/**
- * Created by rlopes on 12/3/13.
- */
 import java.io.*;
 import java.net.*;
 
 /**
  * TODO implementar PI para modelo de relógio do slave
  * Implementação do slave do servo clock.
+ * @author Ricardo Lopes
  */
 public class TCPClient {
     /**
