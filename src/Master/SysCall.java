@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 public class SysCall {
 
     String result = "";
-    //TODO SysCall command <date +\"%N\">
 
     /**
      * Execução de chamada ao sistema

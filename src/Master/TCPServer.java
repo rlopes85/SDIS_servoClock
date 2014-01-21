@@ -20,33 +20,32 @@ public class TCPServer {
     }
 
     /**
-     *  TODO rever formato das mensagens
+     *  Implementação
      * @param argv, Numero do porto do socket do servidor.
      * @throws Exception
      */
     public static void main(String argv[]) throws Exception {
         String fromclient;
         String toclient;
+
+        long overHead = 0;
         int Port_Number = Integer.valueOf(argv[0]);
-        SysCall time= new SysCall("date +\"%N\"");
-        System.out.println( "Syscall result: " + time.result);
-
-        long init_time;
+        Master_Clock master = new Master_Clock(1,0);//fixme passar parametros como argumentos
+        //Initiate  the socket
         ServerSocket Server = new ServerSocket (Port_Number);
-
         System.out.println ("TCPServer Waiting for client on port " + Port_Number);
 
         while(true) {
             Socket connected = Server.accept();
             System.out.println( " THE CLIENT"+" "+
                     connected.getInetAddress() +":"+connected.getPort()+" IS CONNECTED ");
-                    init_time = MasterTime();
             BufferedReader inFromClient =
                     new BufferedReader(new InputStreamReader (connected.getInputStream()));
 
             PrintWriter outToClient =
                     new PrintWriter(
                             connected.getOutputStream(),true);
+            master.start();
 
             while ( true ) {
 
@@ -54,9 +53,12 @@ public class TCPServer {
                 fromclient = inFromClient.readLine();
 
                 if (fromclient.compareTo("TIME") == 0){
-                    toclient = String.valueOf(init_time - MasterTime());
+                    toclient = String.valueOf(master.getTime());
                     outToClient.println(toclient);
                     System.out.println("SEND: " + toclient);
+                }
+                else{
+                    System.out.println("Pedido desconhecido!");//fixme enviar resposta de erro
                 }
             }
 
