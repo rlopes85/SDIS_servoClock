@@ -18,10 +18,8 @@ public class TCPClient {
     public static void main(String argv[]) throws Exception {
         String FromServer;
         String ToServer;
+        long delta = 0;
 
-         /*
-         fixme rever estrotura dos parametros, passar para aforma mais convencional ip:porto
-          */
         InetAddress ip_server = InetAddress.getByName(argv[0]);
         int Port_Number = Integer.valueOf(argv[1]);
 
@@ -38,12 +36,7 @@ public class TCPClient {
 
         while (true) {
 
-            //FromServer = inFromServer.readLine();
-
-
-                //System.out.println("SEND(Type Q or q to Quit):");
-
-                ToServer = inFromUser.readLine();
+            ToServer = inFromUser.readLine();
             System.out.println(ToServer);
                 if (ToServer.equals("TIME")){
                     //System.out.println(ToServer);
