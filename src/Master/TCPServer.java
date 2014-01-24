@@ -53,12 +53,15 @@ public class TCPServer {
                 fromclient = inFromClient.readLine();
 
                 if (fromclient.compareTo("TIME") == 0){
-                    toclient = String.valueOf(master.getTime());
-                    outToClient.println(toclient);
+                    long t2 = master.getTime();
+                    toclient = String.valueOf(t2);
+                    outToClient.println(toclient+":"+String.valueOf(master.getTime()));
                     System.out.println("SEND: " + toclient);
                 }
                 else{
-                    System.out.println("Pedido desconhecido!");//fixme enviar resposta de erro
+                    toclient = "Pedido desconhecido";
+                    outToClient.println(toclient);
+                    System.out.println("Pedido desconhecido!");
                 }
             }
 

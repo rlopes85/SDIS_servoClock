@@ -5,9 +5,11 @@ package Master;
  * @author Ricardo Lopes
  */
 public class Master_Clock extends Thread{
-    public int m, b;
-    protected long initVal, tmpTime;
-    public long refClock;
+    private int m;          //Rate de crescimento relógio
+    private int b;          //Offset
+    private long initVal;   //Valor inicial do relógio quando inicia programa
+    private long tmpTime;
+    private long refClock;
 
     /**
      * Função para obter o tempo de referencia gerado pela JVM
@@ -24,7 +26,7 @@ public class Master_Clock extends Thread{
      * @param b Offset
      */
     public Master_Clock(int m, int b){
-        this.m = m;
+        this.m = m;     
         this.b = b;
     }
     public void run (){
