@@ -4,7 +4,7 @@ package Master;
  * Implementação do Relógio de referência
  * @author Ricardo Lopes
  */
-public class Master_Clock extends Thread{
+public class MasterClock extends Thread{
     private int m;          //Rate de crescimento relógio
     private int b;          //Offset
     private long initVal;   //Valor inicial do relógio quando inicia programa
@@ -25,7 +25,7 @@ public class Master_Clock extends Thread{
      * @param m Rate de crescimento do relógio.
      * @param b Offset
      */
-    public Master_Clock(int m, int b){
+    public MasterClock(int m, int b){
         this.m = m;     
         this.b = b;
     }

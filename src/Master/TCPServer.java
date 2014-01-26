@@ -30,7 +30,7 @@ public class TCPServer {
 
         long overHead = 0;
         int Port_Number = Integer.valueOf(argv[0]);
-        Master_Clock master = new Master_Clock(1,0);//fixme passar parametros como argumentos
+        MasterClock master = new MasterClock(1,0);//fixme passar parametros como argumentos
         //Initiate  the socket
         ServerSocket Server = new ServerSocket (Port_Number);
         System.out.println ("TCPServer Waiting for client on port " + Port_Number);
@@ -55,11 +55,12 @@ public class TCPServer {
                 if (fromclient.compareTo("TIME") == 0){
                     long t2 = master.getTime();
                     toclient = String.valueOf(t2);
-                    outToClient.println(toclient+":"+String.valueOf(master.getTime()));
-                    System.out.println("SEND: " + toclient);
+                    overHead = master.getTime() - t2;
+                    outToClient.println(toclient+":"+overHead);
+                    System.out.printf("SEND: \t%l \t%l\n", toclient, overHead);
                 }
                 else{
-                    toclient = "Pedido desconhecido";
+                    toclient = "!Pedido desconhecido!";
                     outToClient.println(toclient);
                     System.out.println("Pedido desconhecido!");
                 }
