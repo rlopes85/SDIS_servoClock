@@ -28,7 +28,7 @@ public class TCPServer {
         String fromclient;
         String toclient;
 
-        long overHead = 0;
+        long overHead;
         int Port_Number = Integer.valueOf(argv[0]);
         MasterClock master = new MasterClock(1,0);//fixme passar parametros como argumentos
         //Initiate  the socket
@@ -51,19 +51,27 @@ public class TCPServer {
 
 
                 fromclient = inFromClient.readLine();
-
+                System.out.println(fromclient);
                 if (fromclient.compareTo("TIME") == 0){
                     long t2 = master.getTime();
                     toclient = String.valueOf(t2);
                     overHead = master.getTime() - t2;
-                    outToClient.println(toclient+":"+overHead);
-                    System.out.printf("SEND: \t%l \t%l\n", toclient, overHead);
+                    toclient = toclient+":"+overHead;
+                    //outToClient.println(toclient);
+                    System.out.println("SEND: " +toclient);//fixme debug
+                }
+                else if(fromclient.compareTo("CLOSE") == 0){
+                    toclient = "Fim de comunicação";
+                    //outToClient.println(toclient);
+                    Server.close();
+                    System.exit(1);
                 }
                 else{
                     toclient = "!Pedido desconhecido!";
-                    outToClient.println(toclient);
+                    //outToClient.println(toclient);
                     System.out.println("Pedido desconhecido!");
                 }
+                outToClient.println(toclient);
             }
 
         }
