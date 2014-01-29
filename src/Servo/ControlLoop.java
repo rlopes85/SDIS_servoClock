@@ -16,6 +16,7 @@ public class ControlLoop extends Thread {
     private double fb   = 0.0;  //feedback
     private double e    = 0.0;  //erro (diferença entre o sinal de referencia e o feedback
     private double y    = 0.0;  //saida do controlo
+    private double u    = 0.0;
     /**
      *
      * @param k_p
@@ -36,8 +37,11 @@ public class ControlLoop extends Thread {
         projecto.start();
 
         do{
-            compensação.setE(this.calcularErro());
-            y = (compensação.execPI())*(projecto.getSlaveClock());
+            e = this.calcularErro();
+            compensação.setE(e);
+            u=compensação.execPI();
+            y = (u)*(projecto.getSlaveClock());
+            //System.out.println("Clock"+y+" U-> "+u);
         }
         while (true);
     }
@@ -65,12 +69,15 @@ public class ControlLoop extends Thread {
      */
     public void setFb(double feedback){
         this.fb = feedback;
-    }
+    } //fixme no feedback in
 
     public double getY(){
-        return y;
+        return this.y;
     }
 
+    public double getR(){return this.r;}
+
+    public double getE(){return this.e;}
     /**
      *
      */

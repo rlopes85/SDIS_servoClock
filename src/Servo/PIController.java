@@ -53,6 +53,9 @@ public class PIController {
         this.e = err;
     }
 
+    public double getE(){return this.e;}
+
+    public double getU(){return this.u;}
     /**
      * Reset ao erro total, erro proporcional e resultado do PI
      */
