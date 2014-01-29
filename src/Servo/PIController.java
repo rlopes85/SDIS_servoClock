@@ -8,9 +8,7 @@ public class PIController {
 
     private double Kp;          //factor para controlo proporcional
     private double Ki;          //factor para controlo integral
-    private double r    = 0.0;  //entrada de referencia do controlador PI
     private double e    = 0.0;  //erro
-    private double fb   = 0.0;  //feedback
     private double u    = 0.0;  //resulatado
 
     private double ePro = 0.0;  //erro Proporcional
@@ -24,14 +22,13 @@ public class PIController {
     public PIController(double Kp, double Ki){
         this.Kp = Kp;
         this.Ki = Ki;
+        this.e  = 0.0;
     }
 
     /**
      * Le as entradas, calcula as saidas e escreve para as saidas
      */
     private void calcular(){
-        //calculo do sinal de erro
-        e = r - fb;
 
         //integracao do erro
         eTot += e;
@@ -52,20 +49,8 @@ public class PIController {
         return u;
     }
 
-    /**
-     * Passagem do valor de referencia (r[n])
-     * @param ref
-     */
-    public void setR(double ref){
-        this.r = ref;
-    }
-
-    /**
-     *  Passagem do valor de feedback (y[n])
-      * @param feedback o valor de feedback desejado
-     */
-    public void setFb(double feedback){
-        this.fb = feedback;
+    public void setE(double err){
+        this.e = err;
     }
 
     /**
