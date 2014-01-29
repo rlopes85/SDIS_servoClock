@@ -51,7 +51,7 @@ public class TCPServer {
 
 
                 fromclient = inFromClient.readLine();
-                System.out.println(fromclient);
+                //System.out.println(fromclient);
                 if (fromclient.compareTo("TIME") == 0){
                     long t2 = master.getTime();
                     toclient = String.valueOf(t2);
