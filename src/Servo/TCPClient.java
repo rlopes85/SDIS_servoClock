@@ -24,6 +24,7 @@ public class TCPClient {
 
 
 
+
     /**
      *
      * @param argv, Recebe como parametros o ip do servidor e o porto na forma ip porto
@@ -38,11 +39,11 @@ public class TCPClient {
         
         double Kp;
         double Ki;
-        double skew = 1.01;
-        double T = 1000;
-
+        double skew = 1.0001;
+        double T = 1000000; //periodo em usegundos
+        double time = 0.0;
         double ref; //sinal de referencia
-        double fdb;	//sinal de feedback
+        double fdb = 0;	//sinal de feedback
         double u ;  //sinal de saida do controlo PI
         double y;   //resultado do controlo
         
@@ -60,18 +61,20 @@ public class TCPClient {
         /*
          * Inicializar obj. compensacao PI
          */
-        PIController pi = new PIController(Kp, Ki);
+       // PIController pi = new PIController(Kp, Ki);
 
         /*
          * Inicializar histograma
          */
-        Histograma hist;// = new Histograma(1,); fixme Definir parametros do istograma
+/*        Histograma hist;// = new Histograma(1,); fixme Definir parametros do istograma
         
-        /*
+        *//*
          * Inicializar relogio do servo
-         */
+         *//*
         ServoClock servoclock = new ServoClock(skew, T);
-        servoclock.start();
+        servoclock.start();*/
+
+        ControlLoop controlo = new ControlLoop(Kp,Ki,skew,T);
         /*
          * Socket configuration
          */
@@ -82,18 +85,32 @@ public class TCPClient {
         
         socket.sendToServer(ToServer);
         socket.start();
+        controlo.start();
 
         for (int i=0; i<20;i++){
+            //t1 = controlo.projecto.getSlaveClock();
             FromServer = socket.receiveFromServer();
             if((FromServer != null)){
                 //System.out.println("iteração: "+i +": "+FromServer);
+                //t4 = controlo.projecto.getSlaveClock();
                 String [] result = FromServer.split(":");
 
+                ref = Double.valueOf(result[0]);
                 t3_t2 = Double.valueOf(result[1]);
-                System.out.println("iteração: "+i +": "+t3_t2);
+                //System.out.println("iteração: "+i +": "+t3_t2);
                 //delta = getRTD(t1,t4,t3_t2);
+                System.out.println("iteração: "+i +" <-> "+controlo.getR()+" compensa:  "+controlo.compensação.getU());
+                controlo.setR(ref);
+                controlo.setFb(fdb);
+                fdb = controlo.getY();
+                System.out.println("feed back:"+fdb);
+                System.out.println("erro:"+controlo.getE());
+
             }
+
             Thread.sleep(1000);
+
+            //System.out.println(servoclock.getSlaveClock());
         }
         socket.closeConection();
         //System.exit(1);

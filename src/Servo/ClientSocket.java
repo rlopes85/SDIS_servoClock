@@ -43,7 +43,7 @@ public class ClientSocket extends Thread{
         
 		while (true) {
         	//ToServer = inFromUser.readLine();
-            System.out.println(ToServer);
+            //System.out.println(ToServer);
                 //if (ToServer.equals("TIME")){
                     //System.out.println(ToServer);
                     outToServer.println(ToServer);
