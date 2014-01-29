@@ -2,11 +2,11 @@ package Servo;
 
 public class ServoClock extends Thread{
 	private double a; 	//skew
-	private double T;	//Periodo de sincronização
+	private double T;	//Periodo de sincronizaco
 	public  double slave_clock;
 	
 	/**
-	 *  Construtor do relógio do servodor, inicializa o contador a zero
+	 *  Construtor do relogio do servodor, inicializa o contador a zero
 	 *  e define o skew e o periodo de sincronizacao 
 	 * @param a Skew	
 	 * @param T Periodo de sincronizacao
@@ -16,10 +16,10 @@ public class ServoClock extends Thread{
 		this.setT(T);
 		this.slave_clock = 0.0;
 	}
-	
+	@Override
 	public void run(){
 		do{
-		slave_clock += (a*T);//TODO Efectuar contas em nano/milisegundos
+		slave_clock += (a*T);
 		}while(true);
 	}
 	

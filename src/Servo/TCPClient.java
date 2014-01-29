@@ -38,6 +38,9 @@ public class TCPClient {
         
         double Kp;
         double Ki;
+        double skew = 1.01;
+        double T = 1000;
+
         double ref; //sinal de referencia
         double fdb;	//sinal de feedback
         double u ;  //sinal de saida do controlo PI
@@ -67,7 +70,7 @@ public class TCPClient {
         /*
          * Inicializar relogio do servo
          */
-        ServoClock servoclock = new ServoClock(0.1, 1);//TODO Fazer contas em nano/mili segundos
+        ServoClock servoclock = new ServoClock(skew, T);
         servoclock.start();
         /*
          * Socket configuration
@@ -79,12 +82,27 @@ public class TCPClient {
         
         socket.sendToServer(ToServer);
         socket.start();
-        
+
+        for (int i=0; i<20;i++){
+            FromServer = socket.receiveFromServer();
+            if((FromServer != null)){
+                //System.out.println("iteração: "+i +": "+FromServer);
+                String [] result = FromServer.split(":");
+
+                t3_t2 = Double.valueOf(result[1]);
+                System.out.println("iteração: "+i +": "+t3_t2);
+                //delta = getRTD(t1,t4,t3_t2);
+            }
+            Thread.sleep(1000);
+        }
+        socket.closeConection();
+        //System.exit(1);
         /*
          * ------------------------------------------------
-         */
+
         //socket.sleep((long) 100.0);
         FromServer = socket.receiveFromServer();
+        System.out.println(FromServer);
         String [] result = FromServer.split(":");
         
         t3_t2 = Double.valueOf(result[1]);
