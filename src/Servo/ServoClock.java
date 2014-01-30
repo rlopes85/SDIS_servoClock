@@ -18,22 +18,14 @@ public class ServoClock extends Thread{
 	}
 	@Override
 	public void run(){
-        System.out.println("clock run");
-        int i = 0;
 		do{
-            if (i < 10){
-                i++;
-                try {
-                    sleep(100);
-                } catch (InterruptedException e) {
-                    System.out.println("erro na contagem relogio");
-                    e.printStackTrace();
-                }
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                System.out.println("erro na contagem relogio");
+                e.printStackTrace();
             }
-		    else{
-                slave_clock += (a*T);
-                i = 0;
-            }
+            slave_clock += (a*T);
 		}while(true);
 
 	}
