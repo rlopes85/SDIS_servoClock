@@ -17,6 +17,7 @@ public class ControlLoop extends Thread {
     private double e    = 0.0;  //erro (diferença entre o sinal de referencia e o feedback
     private double y    = 0.0;  //saida do controlo
     private double u    = 0.0;
+    private  double clock = 0.0;
     /**
      *
      * @param k_p
@@ -37,11 +38,18 @@ public class ControlLoop extends Thread {
         projecto.start();
 
         do{
-            e = this.calcularErro();
+            this.calcularErro();
             compensação.setE(e);
             u=compensação.execPI();
-            y = (u)*(projecto.getSlaveClock());
-            //System.out.println("Clock"+y+" U-> "+u);
+            clock=projecto.getSlaveClock();
+            y = r*((u)*(clock))/(1+(u)*(clock));
+            fb = y;
+            //System.out.println("feedb: "+fb+" U-> "+u+" S -> "+ projecto.getSlaveClock()+ " erro: "+ e);
+            try {
+                this.sleep(100);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
         }
         while (true);
     }
@@ -49,10 +57,10 @@ public class ControlLoop extends Thread {
     /**
      *
      */
-    public double calcularErro(){
+    public void calcularErro(){
         //calculo do sinal de erro
         e = r - fb;
-        return e;
+        //return e;
     }
     /**
      * Passagem do valor de referencia (r[n])

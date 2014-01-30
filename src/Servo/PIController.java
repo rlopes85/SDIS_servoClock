@@ -53,6 +53,10 @@ public class PIController {
         this.e = err;
     }
 
+    public void setKp(double P){this.Kp = P;}
+
+    public void setKi(double I){this.Ki = I;}
+
     public double getE(){return this.e;}
 
     public double getU(){return this.u;}
