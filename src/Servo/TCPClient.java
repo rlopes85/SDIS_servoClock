@@ -76,23 +76,25 @@ public class TCPClient {
          * Main loop
          */
         controlo.compensação.setKi(0.00001);
-        controlo.compensação.setKp(0.001);
-        for (int i=0; i<20;i++){
+        controlo.compensação.setKp(0.01);
+        for (int i=0; i<100;i++){
 
-            //t1 = controlo.projecto.getSlaveClock();
+            t1 = controlo.projecto.getSlaveClock();
             FromServer = socket.receiveFromServer();
             if((FromServer != null)){
                 //System.out.println("iteração: "+i +": "+FromServer);
-                //t4 = controlo.projecto.getSlaveClock();
+
                 String [] result = FromServer.split(":");
 
                 ref = (Double.valueOf(result[0]))/1000000;     //converte de nanosegundos
                 t3_t2 = (Double.valueOf(result[1]))/1000000;   //para milisegundos
-                //System.out.println("iteração: "+i +": "+t3_t2);
-                //delta = getRTD(t1,t4,t3_t2);
+                t4 = controlo.projecto.getSlaveClock();
+                delta = getRTD(t1,t4,t3_t2);
+                //System.out.println("delta: "+delta);
                 //System.out.println("iteração: "+i +" <-> "+controlo.getR()+" compensa:  "+controlo.compensação.getU());
                 controlo.setR(ref);
-                //controlo.setFb(fdb);
+                //controlo.setR(ref+delta);
+
                 //fdb = controlo.getY();
                 System.out.println("Slave:"+controlo.getY());
                 System.out.println("master:"+controlo.getR());
@@ -104,6 +106,7 @@ public class TCPClient {
             //System.out.println(servoclock.getSlaveClock());
         }
         socket.closeConection();
+        controlo.histograma.graphIt();
         //System.exit(1);
         /*
          * ------------------------------------------------

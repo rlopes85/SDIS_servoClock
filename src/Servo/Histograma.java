@@ -1,4 +1,8 @@
 package Servo;
+import org.math.plot.*;
+import org.math.plot.plots.Plot;
+
+import javax.swing.*;
 
 /**
  * TODO mostrar resuldatos num grafico
@@ -9,14 +13,15 @@ package Servo;
  */
 public class Histograma {
 
-    int [] bins = null;
-    int nBins;
+    double [] bins = null;
+    double nBins;
     float xLow,xHigh;
     float delBin;
 
     int overFlows=0,underFlows=0;
 
     String dataString=null;
+    Plot2DPanel plot = null;
 
 
     /**
@@ -24,19 +29,18 @@ public class Histograma {
      * @param nBins
      * @param xLow
      * @param xHigh
-     * @param _width
-     * @param _height
      */
-    Histograma (int nBins, float xLow, float xHigh,int _width,int _height){
+    Histograma (double nBins, float xLow, float xHigh){
 
         this.nBins = nBins;
         this.xLow  = xLow;
         this.xHigh = xHigh;
 
-        bins = new int[nBins];
+        bins = new double[(int)nBins];
         delBin = (xHigh-xLow)/(float)nBins;
 
         reset();
+        plot = new Plot2DPanel();
     }
 
     /**
@@ -45,12 +49,10 @@ public class Histograma {
      * @param nBins
      * @param xLow
      * @param xHigh
-     * @param _width
-     * @param _height
      */
 
-    Histograma (int nBins, double xLow, double xHigh,int _width,int _height){
-        this(nBins, (float) xLow, (float) xHigh, _width, _height);
+    Histograma (double nBins, double xLow, double xHigh){
+        this(nBins, (float) xLow, (float) xHigh);
     }
 
     //----------------------------------------------------------------
@@ -74,10 +76,12 @@ public class Histograma {
     // To display the histogram in a chart, we need to pass the data
     // as a string.
     public void graphIt(){
-        dataString = "";
-        for (int i=0; i<nBins; i++){
-            dataString += bins[i] + " ";
-        }
+
+        plot.addBarPlot("Histogram", bins);
+        JFrame frame = new JFrame("Histograma");
+        frame.setContentPane(plot);
+        frame.setVisible(true);
+        frame.setSize(400,300);
     }
 
 
@@ -87,7 +91,6 @@ public class Histograma {
         for (int i=0; i<nBins; i++){
             bins[i]=0;
             dataString = dataString + bins[i] + " ";
-            //fixme adicionar grafico de estrelinhas??
         }
     }
 

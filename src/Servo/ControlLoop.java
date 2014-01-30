@@ -1,5 +1,7 @@
 package Servo;
 
+
+
 import java.util.ArrayList;
 
 
@@ -29,7 +31,7 @@ public class ControlLoop extends Thread {
         projecto = new ServoClock(skew, period);
         compensação = new PIController(k_p,k_i);
         erro = new ArrayList();
-
+        histograma = new Histograma(40,1.0,10.0);
     }
 
     @Override
@@ -45,6 +47,8 @@ public class ControlLoop extends Thread {
             y = r*((u)*(clock))/(1+(u)*(clock));
             fb = y;
             //System.out.println("feedb: "+fb+" U-> "+u+" S -> "+ projecto.getSlaveClock()+ " erro: "+ e);
+            System.out.println(" erro: "+ e);
+            histograma.setData(e);
             try {
                 this.sleep(100);
             } catch (InterruptedException e1) {
