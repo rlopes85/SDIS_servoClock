@@ -1,6 +1,7 @@
 package Servo;
 import org.math.plot.*;
 import org.math.plot.plots.Plot;
+import java.lang.Math;
 
 import javax.swing.*;
 
@@ -14,10 +15,11 @@ import javax.swing.*;
 public class Histograma {
 
     double [] bins = null;
+    double [] xaxis = null;
     double nBins;
     float xLow,xHigh;
     float delBin;
-
+    double media = 0.0;
     int overFlows=0,underFlows=0;
 
     String dataString=null;
@@ -38,7 +40,11 @@ public class Histograma {
 
         bins = new double[(int)nBins];
         delBin = (xHigh-xLow)/(float)nBins;
+        xaxis = new double[(int)nBins];
 
+        for (int i=0; i < xaxis.length; i++ ){
+            xaxis[i] = delBin*i;
+        }
         reset();
         plot = new Plot2DPanel();
     }
@@ -55,6 +61,13 @@ public class Histograma {
         this(nBins, (float) xLow, (float) xHigh);
     }
 
+    public double getMedia(){
+        for (int i=0; i < bins.length; i++){
+            media += (bins[i]*bins[i]);
+        }
+        media = Math.sqrt(media)/(bins.length);
+        return media;
+    }
     //----------------------------------------------------------------
     void setData(double data){
         setData((float)data);
@@ -77,11 +90,11 @@ public class Histograma {
     // as a string.
     public void graphIt(){
 
-        plot.addBarPlot("Histogram", bins);
+        plot.addBarPlot("Histogram", xaxis,bins);
         JFrame frame = new JFrame("Histograma");
         frame.setContentPane(plot);
         frame.setVisible(true);
-        frame.setSize(400,300);
+        frame.setSize(480,340);
     }
 
 
