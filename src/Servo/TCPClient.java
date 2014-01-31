@@ -40,7 +40,8 @@ public class TCPClient {
         double Ki;
         double skew = 1;
         double T = 100; //periodo em milisegundos
-        double time = 0.0;
+        double media = 0.0;
+        double norm_erro [];
         double ref; //sinal de referencia
         double fdb = 0;	//sinal de feedback
         double u ;  //sinal de saida do controlo PI
@@ -75,9 +76,9 @@ public class TCPClient {
         /*
          * Main loop
          */
-        controlo.compensação.setKi(0.00001);
-        controlo.compensação.setKp(0.01);
-        for (int i=0; i<100;i++){
+        controlo.compensação.setKi(0.1);
+        controlo.compensação.setKp(1);
+        for (int i=0; i<500;i++){
 
             t1 = controlo.projecto.getSlaveClock();
             FromServer = socket.receiveFromServer();
@@ -89,12 +90,13 @@ public class TCPClient {
                 ref = (Double.valueOf(result[0]))/1000000;     //converte de nanosegundos
                 t3_t2 = (Double.valueOf(result[1]))/1000000;   //para milisegundos
                 t4 = controlo.projecto.getSlaveClock();
-                delta = getRTD(t1,t4,t3_t2);
+                delta = getRTD(t1,t4,t3_t2);//rtd
                 //System.out.println("delta: "+delta);
                 //System.out.println("iteração: "+i +" <-> "+controlo.getR()+" compensa:  "+controlo.compensação.getU());
-                controlo.setR(ref);
-                //controlo.setR(ref+delta);
-
+                //controlo.setR(ref);
+                controlo.setR(ref+delta);
+                //controlo.histograma.setData(controlo.getE()*1000000);//convert to nanosegundos
+                //System.out.println("erro: "+controlo.getE()*1000000);
                 //fdb = controlo.getY();
                 System.out.println("Slave:"+controlo.getY());
                 System.out.println("master:"+controlo.getR());
@@ -105,6 +107,21 @@ public class TCPClient {
 
             //System.out.println(servoclock.getSlaveClock());
         }
+     /*   Object erro [] = controlo.erro.toArray();
+        for (int i=0; i < erro.length; i++){
+            media += (((Double) erro[i]).doubleValue());//rms
+        }
+        media = (media)/2; //rms
+        System.out.println("media: "+media);
+        norm_erro = new double[erro.length];
+
+        for (int i=0; i < erro.length; i++){
+            norm_erro[i] = (((Double) erro[i]).doubleValue())-media;
+            controlo.histograma.setData(norm_erro[i]);
+        }
+*/
+
+        System.out.println("Media:"+controlo.histograma.getMedia());
         socket.closeConection();
         controlo.histograma.graphIt();
         //System.exit(1);
