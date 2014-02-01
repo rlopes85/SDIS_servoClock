@@ -21,11 +21,23 @@
         \author[ee08001@fe.up.pt]{Ricardo Lopes}
         \date{\today}
         %\logo{uporto-feup.pdf}
-        \title{Caracterização estatistica Servo-Clock}
+        \title{Caracterização estatistica de um Servo-Clock}
+        \regarding{Sistemas Distribuidos 2013-2014}
         \maketitle
+        \tableofcontent
     \end{titlepage}
-
     \section{Introdução}
-        Este trabalho foi realizado no ambito da uc sdis
+        Nun sistema distribuido o sincronismo entre os relógios dos dispositivo é de enorme relevância.
+    \section{Problema}
+        A precisão do servo clock é afectada por vários factores, 
+    \section{Abordagem}
+       Para realizar a caracterização do do atraso do relógio local em relação ao relógio de rederência, foram desenvolvidas duas aplicações, usando o paradigma cliente-servidor
+       em que o servo-clock(cliente), periódicamente faz pedidos ao master(servidor) para saber qual é o valor do relógio de referência, A comunicação entre os dois é feita 
+       através de mensagens com recurso a sockets TCP/IP.
+    \subsection{Master}
+        A aplicação implementa basicamente o server socket para a comunicação
+    \subsection{Servo-Clock}
+    \section{implementação}
 
+     
 \end{document}
