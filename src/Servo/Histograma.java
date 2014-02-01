@@ -6,11 +6,12 @@ import java.lang.Math;
 import javax.swing.*;
 
 /**
- * TODO mostrar resuldatos num grafico
  * A simple histogram class. The setData(float f) finds in which bin
  * the value falls for nBins between the given minimum and maximum
  * values. An integer array keeps track of the number of times the input
  * value fell into a particular bin.
+ * versão modificada
+ * fonte: http://www.particle.kth.se/~fmi/kurs/PhysicsSimulation/Lectures/11B/Examples/Experiment/Histogram.java
  */
 public class Histograma {
 
@@ -27,10 +28,10 @@ public class Histograma {
 
 
     /**
-     *
-     * @param nBins
-     * @param xLow
-     * @param xHigh
+     * Inicializar Histograma
+     * @param nBins numero de divisões entre xLow e xHigh
+     * @param xLow valor minimo de x
+     * @param xHigh valor máximo de x
      */
     Histograma (double nBins, float xLow, float xHigh){
 
@@ -61,6 +62,10 @@ public class Histograma {
         this(nBins, (float) xLow, (float) xHigh);
     }
 
+    /**
+     * Cálculo da média das amostras obtidsa para o histograma
+     * @return
+     */
     public double getMedia(){
         for (int i=0; i < bins.length; i++){
             media += (bins[i]*bins[i]);
@@ -68,11 +73,19 @@ public class Histograma {
         media = Math.sqrt(media)/(bins.length);
         return media;
     }
-    //----------------------------------------------------------------
+
+    /**
+     * Extra for double values
+     * @param data
+     */
     void setData(double data){
         setData((float)data);
     }
-    //----------------------------------------------------------------
+
+    /**
+     * Adicionar amostra ao histograma
+     * @param data valor da amostra
+     */
     void setData(float data){
 
         if( data < xLow)
@@ -85,9 +98,9 @@ public class Histograma {
         }
     }
 
-    //----------------------------------------------------------------
-    // To display the histogram in a chart, we need to pass the data
-    // as a string.
+    /**
+     * Mostra o histograma num JFrame
+     */
     public void graphIt(){
 
         plot.addBarPlot("Histogram", xaxis,bins);
@@ -98,7 +111,9 @@ public class Histograma {
     }
 
 
-    //----------------------------------------------------------------
+    /**
+     * Reset ao histograma
+     */
     public void reset(){
         dataString = "";
         for (int i=0; i<nBins; i++){

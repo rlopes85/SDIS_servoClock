@@ -57,18 +57,15 @@ public class TCPServer {
                     toclient = String.valueOf(t2);
                     overHead = master.getTime() - t2;
                     toclient = toclient+":"+overHead;
-                    //outToClient.println(toclient);
-                    System.out.println("SEND: " +toclient);//fixme debug
+                    System.out.println("SEND: " +toclient);
                 }
                 else if(fromclient.compareTo("CLOSE") == 0){
                     toclient = "Fim de comunicação";
-                    //outToClient.println(toclient);
                     Server.close();
                     System.exit(1);
                 }
                 else{
                     toclient = "!Pedido desconhecido!";
-                    //outToClient.println(toclient);
                     System.out.println("Pedido desconhecido!");
                 }
                 outToClient.println(toclient);

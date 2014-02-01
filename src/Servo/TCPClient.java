@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.*;
 
 /**
- * Implementação do slave do servo clock.
+ * Implementação do ciente TVP e  servo-clock.
  * @author Ricardo Lopes
  */
 public class TCPClient {
@@ -15,7 +15,13 @@ public class TCPClient {
     private static double t3_t2;
     private static double delta = 0; //RTD
 
-
+    /**
+     * Cáclulo de Round Trip Delay(RTD).
+     * @param mt1       tempo do inicio do pedido
+     * @param mt4       tempo em que foi obtida a resposta
+     * @param mt3_t2    overhead de processamento no servidor
+     * @return RTD
+     */
     public static double getRTD(double mt1, double mt4, double mt3_t2){
 
         return ((mt4-mt1) - (mt3_t2))/2;
@@ -36,19 +42,18 @@ public class TCPClient {
         String ToServer = "TIME";
         
         
-        double Kp;
-        double Ki;
-        double skew = 1;
-        double T = 100; //periodo em milisegundos
-        double media = 0.0;
-        double norm_erro [];
+        double Kp;          //ganho proporcional
+        double Ki;          //ganho integral
+        double skew = 1;    //skew
+        double T = 100;     //periodo de amostragem do relogio do servo em milisegundos
+        long T_up = 1000;   //periodo de pedidos ao servidor
+        int nAmostras;
         double ref; //sinal de referencia
-        double fdb = 0;	//sinal de feedback
-        double u ;  //sinal de saida do controlo PI
-        double y;   //resultado do controlo
-        
-        if (argv.length < 4){
-            System.out.println("Argumentos insuficientes !! \n p.f. iniciar programa na forma TCPCient <ip> <porto> <Kp> >Ki>");
+        /*
+         * Verificação dos argumentos
+         */
+        if (argv.length < 5){
+            System.out.printf("Argumentos insuficientes !! \n\r p.f. iniciar programa na forma TCPCient <ip> <porto> <Kp> >Ki> <N Amostras>");
             System.exit(-1);
         }
 
@@ -59,6 +64,10 @@ public class TCPClient {
         Ki = Double.valueOf(argv[3]);
 
         /*
+         * Nº amostras do para o Histograma
+         */
+        nAmostras = Integer.parseInt(argv[4]);
+        /*
          *Malha de controlo
          */
         ControlLoop controlo = new ControlLoop(Kp,Ki,skew,T);
@@ -68,7 +77,7 @@ public class TCPClient {
         InetAddress ip_server = InetAddress.getByName(argv[0]);
         int Port_Number = Integer.valueOf(argv[1]);
 
-        ClientSocket socket = new ClientSocket(ip_server, Port_Number);
+        ClientSocket socket = new ClientSocket(ip_server, Port_Number,T_up);
         
         socket.sendToServer(ToServer);
         socket.start();
@@ -78,74 +87,36 @@ public class TCPClient {
          */
         controlo.compensação.setKi(0.1);
         controlo.compensação.setKp(1);
-        for (int i=0; i<500;i++){
+        for (int i=0; i<nAmostras;i++){
 
             t1 = controlo.projecto.getSlaveClock();
             FromServer = socket.receiveFromServer();
-            if((FromServer != null)){
-                //System.out.println("iteração: "+i +": "+FromServer);
 
+            if((FromServer != null)){
+                System.out.println("Recebeu: "+FromServer);
                 String [] result = FromServer.split(":");
 
                 ref = (Double.valueOf(result[0]))/1000000;     //converte de nanosegundos
                 t3_t2 = (Double.valueOf(result[1]))/1000000;   //para milisegundos
                 t4 = controlo.projecto.getSlaveClock();
                 delta = getRTD(t1,t4,t3_t2);//rtd
-                //System.out.println("delta: "+delta);
-                //System.out.println("iteração: "+i +" <-> "+controlo.getR()+" compensa:  "+controlo.compensação.getU());
-                //controlo.setR(ref);
+
                 controlo.setR(ref+delta);
-                //controlo.histograma.setData(controlo.getE()*1000000);//convert to nanosegundos
-                //System.out.println("erro: "+controlo.getE()*1000000);
-                //fdb = controlo.getY();
-                System.out.println("Slave:"+controlo.getY());
-                System.out.println("master:"+controlo.getR());
+
+                //System.out.println("Slave:"+controlo.getY());
+                //System.out.println("master:"+controlo.getR());
 
             }
 
-            Thread.sleep(1000);
+            Thread.sleep(T_up);
 
             //System.out.println(servoclock.getSlaveClock());
         }
-     /*   Object erro [] = controlo.erro.toArray();
-        for (int i=0; i < erro.length; i++){
-            media += (((Double) erro[i]).doubleValue());//rms
-        }
-        media = (media)/2; //rms
-        System.out.println("media: "+media);
-        norm_erro = new double[erro.length];
 
-        for (int i=0; i < erro.length; i++){
-            norm_erro[i] = (((Double) erro[i]).doubleValue())-media;
-            controlo.histograma.setData(norm_erro[i]);
-        }
-*/
 
         System.out.println("Media:"+controlo.histograma.getMedia());
         socket.closeConection();
         controlo.histograma.graphIt();
-        //System.exit(1);
-        /*
-         * ------------------------------------------------
 
-        //socket.sleep((long) 100.0);
-        FromServer = socket.receiveFromServer();
-        System.out.println(FromServer);
-        String [] result = FromServer.split(":");
-        
-        t3_t2 = Double.valueOf(result[1]);
-        
-        delta = getRTD(t1,t4,t3_t2);
-        
-        ref = Double.valueOf(result[0]) + delta;
-        pi.setFb(0.0);
-        pi.setR(ref);
-        
-        u = pi.execPI();
-        y = u*servoclock.getSlaveClock();
-        pi.setFb(y);
-        /* TODO refinar malha de controlo
-         * ---------------------------
-         */
     }
 }

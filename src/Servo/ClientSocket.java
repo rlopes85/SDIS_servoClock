@@ -9,10 +9,9 @@ import java.net.Socket;
 
 public class ClientSocket extends Thread{
 	private Socket clientSocket;
-	//private BufferedReader inFromUser;
 	private PrintWriter outToServer;
 	private BufferedReader inFromServer;
-	
+	private long T;
 	public String ToServer = null;
 	public String FromServer;
 	
@@ -22,9 +21,9 @@ public class ClientSocket extends Thread{
 	 * @param port	Porto a que se vai ligar
 	 * @throws IOException
 	 */
-	public ClientSocket(InetAddress ip, int port) throws IOException{
+	public ClientSocket(InetAddress ip, int port, long T) throws IOException{
         clientSocket = new Socket(ip, port);
-
+        this.T = T;
 	}
     public void run(){
     	
@@ -42,12 +41,9 @@ public class ClientSocket extends Thread{
 
         
 		while (true) {
-        	//ToServer = inFromUser.readLine();
-            //System.out.println(ToServer);
-                //if (ToServer.equals("TIME")){
-                    //System.out.println(ToServer);
-                    outToServer.println(ToServer);
-                //}
+
+                outToServer.println(ToServer);
+
             try {
                 //fixme tracar caso em que retorna null
 				FromServer = inFromServer.readLine();
@@ -55,9 +51,9 @@ public class ClientSocket extends Thread{
 				System.out.println("!Erro de ligação impossivel ler mensagem do servidor!");
 				e.printStackTrace();
 			}
-            //System.out.println("RECIEVED:" + FromServer);
+
             try {
-                this.sleep(1000);
+                this.sleep(T);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -65,22 +61,22 @@ public class ClientSocket extends Thread{
 	}
 
     /**
-     *
+     * fechar ligação com o servidor
      */
     public void closeConection(){
         this.sendToServer("CLOSE");
     }
 
     /**
-     *
-     * @param toSend
+     * Definir mensagem a enviar para o servidor
+     * @param toSend String a enviar
      */
 	public void sendToServer(String toSend){
 		ToServer = toSend;
 	}
 
     /**
-     *
+     * Obter a resposta do servidor
      * @return message from server
      */
 	public String receiveFromServer(){

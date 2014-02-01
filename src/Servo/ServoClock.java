@@ -1,8 +1,12 @@
 package Servo;
 
+/**
+ * Modelo da fonte local de relógio do servo-clock
+ * @author Ricardo Lopes
+ */
 public class ServoClock extends Thread{
 	private double a; 	//skew
-	private double T;	//Periodo de sincronizaco
+	private double T;	//Tick do servo-clock
 	public  double slave_clock;
 	
 	/**
@@ -20,38 +24,60 @@ public class ServoClock extends Thread{
 	public void run(){
 		do{
             try {
-                sleep(100);
+                sleep((long)T);
             } catch (InterruptedException e) {
-                System.out.println("erro na contagem relogio");
                 e.printStackTrace();
             }
             slave_clock += (a*T);
 		}while(true);
 
 	}
-	
+
+    /**
+     * Obter o valor da fonte de relógio do servo-clock
+     * @return
+     */
 	public double getSlaveClock(){
 		return slave_clock;
 	}
-	
+
+    /**
+     * Reiniciar relógio
+     */
 	public void reset(){
 		this.setA(0.0);
 		this.setT(0.0);
 		this.slave_clock = 0.0;
 	}
 
+    /**
+     * obter valor de skew
+     * @return skew
+     */
 	public double getA() {
 		return a;
 	}
 
+    /**
+     * Definir valor do "skew"
+     * @param a Skew
+     */
 	public void setA(double a) {
 		this.a = a;
 	}
 
+    /**
+     * Obter valor do tick do servo-clock
+     * @return tick do servo-clock
+     */
 	public double getT() {
 		return T;
 	}
 
+    /**
+     * Definir valor do tick do servo-clock
+     * @param t
+     */
 	public void setT(double t) {
 		this.T = t;
 	}

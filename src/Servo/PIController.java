@@ -1,7 +1,7 @@
 package Servo;
 
 /**
- *
+ * Modelo do controlador PI
  * @author Ricardo Lopes
  */
 public class PIController {
@@ -49,16 +49,37 @@ public class PIController {
         return u;
     }
 
+    /**
+     * Definição do valor de entrada docontrolados
+     * @param err Diferença entre o sinal de referencia e o feedback da
+     *          saída da malha de controlo(malha fechada
+     */
     public void setE(double err){
         this.e = err;
     }
 
+    /**
+     * Atribuir novo ganho proporcional
+     * @param P Ganho proporcional
+     */
     public void setKp(double P){this.Kp = P;}
 
+    /**
+     * Atribuir novo ganho integral
+     * @param I ganho integral
+     */
     public void setKi(double I){this.Ki = I;}
 
+    /**
+     * Obter o erro
+     * @return Erro
+     */
     public double getE(){return this.e;}
 
+    /**
+     * Obter saída do PI(U)
+     * @return U
+     */
     public double getU(){return this.u;}
     /**
      * Reset ao erro total, erro proporcional e resultado do PI

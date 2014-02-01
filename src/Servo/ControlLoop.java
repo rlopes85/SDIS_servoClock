@@ -13,7 +13,7 @@ public class ControlLoop extends Thread {
     PIController compensação;
     ServoClock projecto;
     Histograma histograma = null;
-    List erro;
+
 
     private double r    = 0.0;  //entrada de referencia do controlador PI
     private double fb   = 0.0;  //feedback
@@ -21,17 +21,19 @@ public class ControlLoop extends Thread {
     private double y    = 0.0;  //saida do controlo
     private double u    = 0.0;
     private double clock = 0.0;
+    private long Ts;
     /**
-     *
-     * @param k_p
+     * Cconstrói uma nova malha de controlo com projeto servo-clock e compensação PI
+     * @param k_p ganho proporcional
      * @param k_i
      * @param skew
      * @param period
      */
     public ControlLoop(double k_p, double k_i, double skew, double period) {
+        Ts = (long) period;
         projecto = new ServoClock(skew, period);
         compensação = new PIController(k_p,k_i);
-        erro = new ArrayList();
+
         histograma = new Histograma(200,0,200);
     }
 
@@ -43,16 +45,15 @@ public class ControlLoop extends Thread {
         do{
             this.calcularErro();
             compensação.setE(e);
-            u=compensação.execPI();
-            clock=projecto.getSlaveClock();
-            y = r*((u)*(clock))/(1+(u)*(clock));
+            u = compensação.execPI();
+            clock = projecto.getSlaveClock();
+            y = r*((u)*(clock))/(1+(u)*(clock)); //ft da malha de controlo
             fb = y;
-            //System.out.println("feedb: "+fb+" U-> "+u+" S -> "+ projecto.getSlaveClock()+ " erro: "+ e);
-            //System.out.println(" erro: "+ (e*1000));
-            histograma.setData(e*1000000);
+
+            histograma.setData(e*1000000); //adiciana valores ao histograma em nanosegundos
 
             try {
-                this.sleep(100);
+                this.sleep(Ts);
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
@@ -61,39 +62,42 @@ public class ControlLoop extends Thread {
     }
 
     /**
-     *
+     * Calcla o erro do servo-clock em relação ao relógio de referẽncia
      */
     public void calcularErro(){
         //calculo do sinal de erro
         e = r - fb;
-        //return e;
+
     }
     /**
-     * Passagem do valor de referencia (r[n])
-     * @param ref
+     * Passagem do valor do relógio de referência (r[n])
+     * @param ref valor de referência
      */
     public void setR(double ref){
         this.r = ref;
     }
 
-
     /**
-     *  Passagem do valor de feedback (y[n])
-     * @param feedback o valor de feedback desejado
+     * Obter valor do Servo-Clock já compensado
+     * @return resultado da ft da malha de controlo
      */
-    public void setFb(double feedback){
-        this.fb = feedback;
-    } //fixme no feedback in
-
     public double getY(){
         return this.y;
     }
 
+    /**
+     * Obter valor do relógio de referência
+     * @return relógio de referências
+     */
     public double getR(){return this.r;}
 
+    /**
+     * Obter valor do erro
+     * @return erro
+     */
     public double getE(){return this.e;}
     /**
-     *
+     * Efectua reset a malha de controlo
      */
     public void reset(){
         this.r  = 0.0;

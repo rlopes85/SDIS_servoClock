@@ -1,7 +1,7 @@
 package Master;
 
 /**
- * Implementação do Relógio de referência
+ * Implementação do Relógio de referência do Master
  * @author Ricardo Lopes
  */
 public class MasterClock extends Thread{
@@ -29,6 +29,7 @@ public class MasterClock extends Thread{
         this.m = m;     
         this.b = b;
     }
+    @Override
     public void run (){
         initVal = MasterTime();
         do {
@@ -37,6 +38,11 @@ public class MasterClock extends Thread{
         } while (true);
 
     }
+
+    /**
+     * Obter relógio local
+     * @return valor do relógio
+     */
     public long getTime(){
 
         return  refClock;
